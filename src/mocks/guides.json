@@ -1,0 +1,42 @@
+[
+  {
+    "label": "Earthquake",
+    "image": "earthquake"
+  },
+  {
+    "label": "Landslide",
+    "image": "landslide"
+  },
+  {
+    "label": "Fire",
+    "image": "fire"
+  },
+  {
+    "label": "Soil Erosion",
+    "image": "erosion"
+  },
+  {
+    "label": "Tsunami",
+    "image": "tsunami"
+  },
+  {
+    "label": "Flood",
+    "image": "flood"
+  },
+  {
+    "label": "Storm",
+    "image": "storm"
+  },
+  {
+    "label": "Volcanic Eruption",
+    "image": "volcano"
+  },
+  {
+    "label": "Fire Forest",
+    "image": "wildfire"
+  },
+  {
+    "label": "River Side",
+    "image": "riverside"
+  }
+]
