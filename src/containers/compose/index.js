@@ -10,12 +10,22 @@ import {
 import RNPickerSelect from 'react-native-picker-select';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import ImagePicker from 'react-native-image-picker';
+import {connect} from 'react-redux';
+import {withNavigation} from 'react-navigation';
+import {isEmpty} from 'lodash';
 
-const WATER_IMAGE = require('../../images/warning.png');
+import Loading from '../../components/loading';
 import Colors from '../../utils/colors';
 import styles from './styles';
 import pickerStyles from './pickerStyles';
+import {
+  reportConcern,
+  getConcernTypes,
+  getBarangays,
+  uploadPhoto,
+} from '../../actions/concern';
 
+const WATER_IMAGE = require('../../images/warning.png');
 const options = {
   title: 'Select Image of hazard',
   storageOptions: {
@@ -24,23 +34,74 @@ const options = {
   },
 };
 
+let self;
 class ComposeScreen extends React.Component {
   static navigationOptions = {
     headerRight: () => (
-      <Button onPress={() => alert('This is a button!')} title="Submit" />
+      <Button onPress={() => self.onSubmit()} title="Submit" />
     ),
   };
 
   state = {
-    remarks: '',
+    barangay: '',
+    concernType: '',
+    concern: '',
     hazardImage: null,
-    rating: 1,
+    urgencyLevel: 1,
   };
 
-  componentDidMount() {}
+  onSubmit = () => {
+    const {isLoading} = this.props;
+    const {concernType, barangay, hazardImage} = this.state;
 
-  onFinishedRating = rating => {
-    this.setState({rating});
+    if (isLoading) {
+      return;
+    }
+
+    if (isEmpty(concernType)) {
+      alert('Concern type is required');
+      return;
+    }
+
+    if (isEmpty(barangay)) {
+      alert('Barangay is required');
+      return;
+    }
+
+    if (!hazardImage) {
+      this.sendPost();
+    } else {
+      this.props.dispatch(uploadPhoto(hazardImage));
+    }
+  };
+
+  sendPost = () => {
+    const {uploadedPhoto} = this.props;
+    const payload = this.state;
+    payload.photo = uploadedPhoto;
+    this.props.dispatch(
+      reportConcern(this.state, () => {
+        this.props.navigation.goBack();
+      }),
+    );
+  };
+
+  componentDidMount() {
+    self = this;
+    this.props.dispatch(getBarangays());
+    this.props.dispatch(getConcernTypes());
+  }
+
+  componentDidUpdate(prevProps) {
+    const {uploadedPhoto} = this.props;
+
+    if (uploadedPhoto && prevProps.uploadedPhoto !== uploadedPhoto) {
+      this.sendPost();
+    }
+  }
+
+  onFinishedRating = urgencyLevel => {
+    this.setState({urgencyLevel});
   };
 
   onRemoveImage = () => {
@@ -49,8 +110,6 @@ class ComposeScreen extends React.Component {
 
   onCameraTapped = () => {
     ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
-
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -69,19 +128,23 @@ class ComposeScreen extends React.Component {
   };
 
   render() {
-    const {remarks, hazardImage, rating} = this.state;
+    const {concern, hazardImage} = this.state;
+    const {barangays, concernTypes, isLoading} = this.props;
 
     return (
       <View style={styles.container}>
         <Text style={[styles.txtLabel, {marginTop: 0}]}>HAZARD TYPE</Text>
         <RNPickerSelect
           style={pickerStyles}
-          onValueChange={value => console.log(value)}
-          items={[
-            {label: 'Football', value: 'football'},
-            {label: 'Baseball', value: 'baseball'},
-            {label: 'Hockey', value: 'hockey'},
-          ]}
+          onValueChange={concernType => this.setState({concernType})}
+          items={concernTypes}
+        />
+
+        <Text style={[styles.txtLabel]}>BARANGAYS</Text>
+        <RNPickerSelect
+          style={pickerStyles}
+          onValueChange={barangay => this.setState({barangay})}
+          items={barangays}
         />
 
         <Text style={styles.txtLabel}>REMARKS</Text>
@@ -90,8 +153,8 @@ class ComposeScreen extends React.Component {
           autoCapitalize="none"
           numberOfLines={4}
           style={styles.txtInput}
-          onChangeText={remarks => this.setState({remarks})}
-          value={remarks}
+          onChangeText={concern => this.setState({concern})}
+          value={concern}
           placeholder={'Describe what happen ...'}
         />
         <View
@@ -150,9 +213,21 @@ class ComposeScreen extends React.Component {
             </TouchableOpacity>
           </View>
         )}
+
+        <Loading isVisible={isLoading} />
       </View>
     );
   }
 }
 
-export default ComposeScreen;
+const mapStateToProps = state => {
+  const {concernTypes, barangays, uploadedPhoto, isLoading} = state.concern;
+  return {
+    concernTypes,
+    barangays,
+    uploadedPhoto,
+    isLoading,
+  };
+};
+
+export default connect(mapStateToProps)(withNavigation(ComposeScreen));

@@ -12,6 +12,13 @@ export const Actions = [
     text: 'Send Report!',
     icon: require('../images/send.png'),
     name: 'bt_send',
+    position: 3,
+    color: Colors.red,
+  },
+  {
+    text: 'Lessons',
+    icon: require('../images/send.png'),
+    name: 'bt_lessons',
     position: 2,
     color: Colors.red,
   },

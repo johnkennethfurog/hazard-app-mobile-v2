@@ -1,15 +1,11 @@
 import axios from 'axios';
+import {hazardApiRequest} from '../client/client';
 
-import {FETCH_GUIDES, GET_LESSONS} from './types';
+import {GET_LESSONS} from './types';
 
-export const fetchGuides = () => dispatch => {
-  dispatch({
-    type: FETCH_GUIDES,
-  });
-};
-
-export const getLesson = () => dispatch => {
+export const getLessons = () => dispatch => {
   dispatch({
     type: GET_LESSONS,
+    payload: hazardApiRequest().get('/lesson'),
   });
 };

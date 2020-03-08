@@ -1,2 +1,8 @@
-export const FETCH_GUIDES = 'FETCH_GUIDES';
+export const REPORT_CONCERN = 'REPORT_CONCERN';
+export const UPLOAD_PHOTO = 'UPLOAD_PHOTO';
+export const GET_CONCERNS = 'GET_CONCERNS';
+
+export const GET_BARANGAYS = 'GET_BARANGAYS';
+export const GET_CONCERN_TYPES = 'GET_CONCERN_TYPES';
+
 export const GET_LESSONS = 'GET_LESSONS';

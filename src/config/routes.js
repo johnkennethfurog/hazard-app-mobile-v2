@@ -13,6 +13,7 @@ import LectureScreen from '../containers/lecture';
 import SplashScreen from '../containers/splash';
 import ComposeScreen from '../containers/compose';
 import LocateScreen from '../containers/locate';
+import LessonsScreen from '../containers/lessons';
 
 const HomeStack = createStackNavigator(
   {
@@ -20,6 +21,7 @@ const HomeStack = createStackNavigator(
     Lecture: LectureScreen,
     Compose: ComposeScreen,
     Locate: LocateScreen,
+    Lessons: LessonsScreen,
   },
   {
     initialRouteName: 'Home',

@@ -13,49 +13,25 @@ const initialState = {
 
 export default function guides(state = initialState, action) {
   switch (action.type) {
-    case `${GET_LESSONS}_ERROR`:
-    case `${FETCH_GUIDES}_ERROR`: {
+    case `${GET_LESSONS}_ERROR`: {
       return {
         ...state,
         isLoading: false,
       };
     }
-    case `${GET_LESSONS}_PENDING`:
-    case `${FETCH_GUIDES}_PENDING`: {
+    case `${GET_LESSONS}_PENDING`: {
       return {
         ...state,
         isLoading: true,
-      };
-    }
-
-    case `${FETCH_GUIDES}_FULFILLED`: {
-      return {
-        ...state,
-        isLoading: false,
       };
     }
 
     case `${GET_LESSONS}_FULFILLED`: {
+      const lessons = action.payload.data;
+      console.log('lessons', lessons);
       return {
-        ...state,
+        lessons,
         isLoading: false,
-      };
-    }
-
-    case `${FETCH_GUIDES}`: {
-      return {
-        ...state,
-        data: guideData,
-        isLoading: true,
-      };
-    }
-
-    case `${GET_LESSONS}`: {
-      console.log(GET_LESSONS, lessonData);
-      return {
-        ...state,
-        lessons: lessonData,
-        isLoading: true,
       };
     }
 

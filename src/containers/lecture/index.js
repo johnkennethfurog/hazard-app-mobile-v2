@@ -11,14 +11,30 @@ import Colors from '../../utils/colors';
 import styles from './styles';
 
 class LectureScreen extends React.Component {
-  componentDidMount() {
-    console.log('dispatch');
-    this.props.dispatch(getLesson());
-  }
-
   state = {
     activeSections: [],
+    lessons: [],
   };
+
+  componentDidMount() {
+    const {lesson} = this.props.navigation.state.params;
+    const before = {
+      title: 'Before',
+      content: lesson.beforePhotoUrl,
+    };
+    const during = {
+      title: 'During',
+      content: lesson.duringPhotoUrl,
+    };
+    const after = {
+      title: 'After',
+      content: lesson.afterPhotoUrl,
+    };
+
+    this.setState({
+      lessons: [before, during, after],
+    });
+  }
 
   _renderHeader = section => {
     return (
@@ -47,7 +63,7 @@ class LectureScreen extends React.Component {
   };
 
   render() {
-    const {lessons} = this.props;
+    const {lessons} = this.state;
 
     return (
       <SafeAreaView style={styles.container}>
@@ -65,10 +81,7 @@ class LectureScreen extends React.Component {
 }
 
 const mapStateToProps = state => {
-  console.log('state', state);
-  return {
-    lessons: state.guide.lessons,
-  };
+  return {};
 };
 
 export default connect(mapStateToProps)(withNavigation(LectureScreen));
