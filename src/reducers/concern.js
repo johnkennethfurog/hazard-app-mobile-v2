@@ -93,9 +93,11 @@ export default function concern(state = initialState, action) {
 
     case `${REPORT_CONCERN}_FULFILLED`: {
       const concern = action.payload.data.data;
-      state.concerns.push(concern);
+      const cncrns = state.concerns;
+      cncrns.push(concern);
       return {
         ...state,
+        concerns: cncrns.slice(),
         uploadedPhoto: null,
         isLoading: false,
       };

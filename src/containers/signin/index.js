@@ -1,38 +1,46 @@
 import * as React from 'react';
-import { Button, Image, Text, TextInput, View} from 'react-native';
+import {
+  TouchableOpacity,
+  Image,
+  Text,
+  TextInput,
+  View,
+  Alert,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
+import {isEmpty} from 'lodash';
 
 import CustomizeTextInput from '../../components/text-input';
+import Colors from '../../utils/colors';
 import styles from './styles';
+import {signin} from '../../actions/user';
 
 class SignInScreen extends React.Component {
   state = {
-    empId: '32041',
-    password: '12345',
+    email: 'johnkennethfurog@gmail.com',
+    pass: 'zawebobe',
   };
 
   onLoginClicked = () => {
+    const {email, pass} = this.state;
 
-    this.props.navigation.navigate('Home');
-    return;
-    const {empId, password} = this.state;
-
-    if (empId !== '' || password !== '') {
-      this.props.dispatch(login({empId, password}));
+    if (isEmpty(email) || isEmpty(pass)) {
+      Alert.alert('Email and Barangay is required');
+      return;
     }
+
+    signin(this.state, () => {
+      this.props.navigation.navigate('Home');
+    });
   };
 
-  componentDidUpdate(prevProps) {
-    const {data} = this.props;
-
-    if (data && prevProps.data !== data) {
-      this.props.navigation.navigate('MainDrawer');
-    }
-  }
+  onRegisterClicked = () => {
+    this.props.navigation.navigate('Register');
+  };
 
   render() {
-    const {empId, password} = this.state;
+    const {email, pass} = this.state;
 
     return (
       <View style={styles.container}>
@@ -51,41 +59,53 @@ class SignInScreen extends React.Component {
               alignItems: 'center',
             }}>
             <Text style={{color: 'gray', fontSize: 25, fontWeight: 'bold'}}>
-              THE APPROVER
+              HAZARD
             </Text>
             <Text style={{color: 'gray', fontSize: 12}}>
               LOGIN TO YOUR ACCOUNT
             </Text>
           </View>
 
-          <View style={{margin: 15}}>
+          <View style={{margin: 10}}>
             <CustomizeTextInput
-              onChangeText={empId => this.setState({empId})}
-              placeholder="User ID"
-              value={empId}
+              onChangeText={email => this.setState({email})}
+              placeholder="Email"
+              value={email}
             />
 
             <CustomizeTextInput
-              onChangeText={password => this.setState({password})}
-              placeholder="Password"
-              value={password}
+              onChangeText={pass => this.setState({pass})}
+              placeholder="pass"
+              value={pass}
               inputStyles={{marginTop: 8}}
               isSecured
             />
 
             <View
               style={{
-                flexDirection: 'row',
                 marginTop: 16,
-                
-                justifyContent: 'center',
               }}>
-              <View style={{flex: 1}}>
-                <Button
-                  style={{backgroundColor: 'blue'}}
-                  title="Login"
-                  onPress={this.onLoginClicked}
-                />
+              <TouchableOpacity
+                onPress={this.onLoginClicked}
+                style={styles.btn}>
+                <Text
+                  style={{fontSize: 14, color: 'white', fontWeight: 'bold'}}>
+                  Login
+                </Text>
+              </TouchableOpacity>
+              <View style={{flexDirection: 'row', marginTop: 5}}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: 'gray',
+                  }}>
+                  Don't have an account?
+                </Text>
+                <TouchableOpacity onPress={this.onRegisterClicked}>
+                  <Text style={{color: 'black', paddingHorizontal: 3}}>
+                    Register Now
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -96,8 +116,7 @@ class SignInScreen extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return {
-  };
+  return {};
 };
 
 export default connect(mapStateToProps)(withNavigation(SignInScreen));

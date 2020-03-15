@@ -27,6 +27,7 @@
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.6.4",
     "react-native-screens": "^2.0.0-alpha.32",
+    "react-native-sensitive-info": "^5.5.5",
     "react-native-tags-chooser": "git+https://github.com/RZulfikri/react-native-tags-chooser.git",
     "react-navigation": "^4.1.0",
     "react-navigation-stack": "^2.0.16",

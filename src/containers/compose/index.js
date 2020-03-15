@@ -17,7 +17,8 @@ import {isEmpty} from 'lodash';
 import Loading from '../../components/loading';
 import Colors from '../../utils/colors';
 import styles from './styles';
-import pickerStyles from './pickerStyles';
+import pickerStyles from '../../utils/pickerStyles';
+
 import {
   reportConcern,
   getConcernTypes,

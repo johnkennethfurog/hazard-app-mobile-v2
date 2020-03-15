@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {Alert} from 'react-native';
 import {isNull, isEmpty} from 'lodash';
 
 const BASE_URL = 'https://hazard-backend.herokuapp.com';
@@ -33,6 +34,9 @@ const getAxiosClient = async (
   axiosInstance.interceptors.response.use(
     response => response,
     error => {
+      if (error.response) {
+        Alert.alert(error.response.data.message);
+      }
       throw error;
     },
   );

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {hazardApiRequest} from '../client/client';
 
 import {GET_LESSONS} from './types';

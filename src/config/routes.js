@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {TouchableOpacity, Text, View} from 'react-native';
 
 import {createStackNavigator} from 'react-navigation-stack';
 import {createSwitchNavigator, createAppContainer} from 'react-navigation';
@@ -14,6 +15,7 @@ import SplashScreen from '../containers/splash';
 import ComposeScreen from '../containers/compose';
 import LocateScreen from '../containers/locate';
 import LessonsScreen from '../containers/lessons';
+import RegistrationScreen from '../containers/registration';
 
 const HomeStack = createStackNavigator(
   {
@@ -38,11 +40,21 @@ const AuthStack = createStackNavigator({
   },
 });
 
+const RegistrationStack = createStackNavigator({
+  Registration: {
+    screen: RegistrationScreen,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+});
+
 const RootStack = createSwitchNavigator(
   {
     Splash: SplashScreen,
     Home: HomeStack,
     Auth: AuthStack,
+    Register: RegistrationStack,
   },
   {
     initialRouteName: 'Splash',

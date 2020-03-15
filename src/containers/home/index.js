@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   FlatList,
-  alert,
+  Alert,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
@@ -20,11 +20,38 @@ import {getImageSource} from '../../utils/helper';
 import Colors from '../../utils/colors';
 import {Actions} from '../../utils/actions';
 import ConcernCard from '../../components/concern-card';
+import {signOut} from '../../actions/user';
 
+let self;
 class HomeScreen extends React.Component {
+  static navigationOptions = {
+    headerRight: () => (
+      <Button
+        onPress={() => {
+          self.onLogout();
+        }}
+        title="Logout"
+      />
+    ),
+  };
   componentDidMount() {
+    self = this;
     this.props.dispatch(getConcerns());
   }
+
+  onLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          signOut(() => {
+            this.props.navigation.navigate('Auth');
+          });
+        },
+      },
+      {text: 'No'},
+    ]);
+  };
 
   onDisasterClicked = lesson => {
     this.props.navigation.navigate('Lecture', {lesson});

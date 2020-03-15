@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import Colors from '../../utils/colors';
+import Colors from './colors';
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {

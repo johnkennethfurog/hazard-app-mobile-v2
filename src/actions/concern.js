@@ -1,34 +1,39 @@
 import axios from 'axios';
-import {hazardApiRequest} from '../client/client';
+import SInfo from 'react-native-sensitive-info';
 
+import {hazardApiRequest, hazardAuthorizeApiRequest} from '../client/client';
 import {
   REPORT_CONCERN,
   GET_CONCERNS,
   GET_BARANGAYS,
   GET_CONCERN_TYPES,
   UPLOAD_PHOTO,
+  TOKEN,
 } from './types';
 
 export const reportConcern = (payload, callback) => dispatch => {
-  payload.citizen = '5e6354a319f1765cbc164682';
-  console.log('payload', payload);
-  dispatch({
-    type: REPORT_CONCERN,
-    payload: hazardApiRequest()
-      .post('/concern/new', payload)
-      .then(rspns => {
-        callback();
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      dispatch({
+        type: REPORT_CONCERN,
+        payload: hazardAuthorizeApiRequest(token)
+          .post('/concern/new', payload)
+          .then(rspns => {
+            callback();
 
-        return rspns;
-      }),
-  });
+            return rspns;
+          }),
+      });
+    })
+    .catch(err => {});
 };
 
 export const getConcerns = () => dispatch => {
-  const citizenId = '5e6354a319f1765cbc164682';
-  dispatch({
-    type: GET_CONCERNS,
-    payload: hazardApiRequest().get('/concern/' + citizenId),
+  SInfo.getItem(TOKEN, {}).then(token => {
+    dispatch({
+      type: GET_CONCERNS,
+      payload: hazardAuthorizeApiRequest(token).get('/concern/'),
+    }).catch(err => {});
   });
 };
 
