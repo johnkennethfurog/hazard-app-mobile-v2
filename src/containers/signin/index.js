@@ -19,7 +19,7 @@ import {signin} from '../../actions/user';
 class SignInScreen extends React.Component {
   state = {
     email: 'johnkennethfurog@gmail.com',
-    pass: 'zawebobe',
+    pass: 'fulerisu',
   };
 
   onLoginClicked = () => {

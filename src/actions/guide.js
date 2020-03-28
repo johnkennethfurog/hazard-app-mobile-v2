@@ -1,10 +1,15 @@
-import {hazardApiRequest} from '../client/client';
+import SInfo from 'react-native-sensitive-info';
 
-import {GET_LESSONS} from './types';
+import {hazardAuthorizeApiRequest} from '../client/client';
+import {GET_LESSONS, TOKEN} from './types';
 
 export const getLessons = () => dispatch => {
-  dispatch({
-    type: GET_LESSONS,
-    payload: hazardApiRequest().get('/lesson'),
-  });
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      dispatch({
+        type: GET_LESSONS,
+        payload: hazardAuthorizeApiRequest(token).get('/lesson'),
+      });
+    })
+    .catch(err => {});
 };

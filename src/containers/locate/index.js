@@ -2,6 +2,9 @@ import React from 'react';
 import {Text, View, TouchableOpacity, Dimensions} from 'react-native';
 import LottieView from 'lottie-react-native';
 import Colors from '../../utils/colors';
+import {locateMe, stopLocating} from '../../actions/user';
+
+import {getCurrentLocation} from '../../utils/maps-utils';
 
 import styles from './styles';
 const viewHeight = Dimensions.get('window').height * 0.2;
@@ -14,6 +17,28 @@ class LocateScreen extends React.Component {
   componentDidMount() {}
 
   toggleLocating = isLocating => {
+    if (isLocating) {
+      getCurrentLocation()
+        .then(position => {
+          const currentPosition = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+
+          //console.log('currentPosition', currentPosition);
+
+          locateMe(currentPosition, () => {
+            console.log('error toggleLocating');
+          });
+        })
+        .catch(error => {
+          console.log('currentPosition - error', error);
+        });
+    } else {
+      stopLocating(() => {
+        console.log('error stop Locating');
+      });
+    }
     this.setState({isLocating});
   };
 

@@ -41,7 +41,7 @@ class LessonsScreen extends React.Component {
                   this.onDisasterClicked(item);
                 }}>
                 <View style={styles.item}>
-                  <Image style={styles.img} source={{uri: item.image}} />
+                  <Image style={styles.img} source={{uri: item.icon}} />
                   <Text>{item.name}</Text>
                 </View>
               </TouchableOpacity>

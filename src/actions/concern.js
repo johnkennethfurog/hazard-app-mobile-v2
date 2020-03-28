@@ -38,49 +38,66 @@ export const getConcerns = () => dispatch => {
 };
 
 export const getConcernTypes = () => dispatch => {
-  dispatch({
-    type: GET_CONCERN_TYPES,
-    payload: hazardApiRequest()
-      .get('/concern/concerntype')
-      .then(rspns => {
-        rspns.data.data = rspns.data.data.map(type => {
-          return {label: type.name, value: type._id};
-        });
-        return rspns;
-      }),
-  });
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      dispatch({
+        type: GET_CONCERN_TYPES,
+        payload: hazardAuthorizeApiRequest(token)
+          .get('/concern/concerntype')
+          .then(rspns => {
+            rspns.data.data = rspns.data.data.map(type => {
+              return {label: type.name, value: type._id};
+            });
+            return rspns;
+          }),
+      });
+    })
+    .catch(err => {});
 };
 
 export const getBarangays = () => dispatch => {
-  dispatch({
-    type: GET_BARANGAYS,
-    payload: hazardApiRequest()
-      .get('/agent/get/barangay')
-      .then(rspns => {
-        rspns.data.data = rspns.data.data.map(type => {
-          return {label: type.name, value: type._id};
-        });
-        return rspns;
-      }),
-  });
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      dispatch({
+        type: GET_BARANGAYS,
+        payload: hazardAuthorizeApiRequest(token)
+          .get('/agent/get/barangay')
+          .then(rspns => {
+            rspns.data.data = rspns.data.data.map(type => {
+              return {label: type.name, value: type._id};
+            });
+            return rspns;
+          }),
+      });
+    })
+    .catch(err => {});
 };
 
 export const uploadPhoto = photo => dispatch => {
-  const data = new FormData();
-  data.append('photo', {
-    name: '',
-    uri:
-      Platform.OS === 'android' ? photo.uri : photo.uri.replace('file://', ''),
-  });
-  console.log('data', data);
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      const data = new FormData();
+      data.append('photo', {
+        name: '',
+        uri:
+          Platform.OS === 'android'
+            ? photo.uri
+            : photo.uri.replace('file://', ''),
+      });
 
-  dispatch({
-    type: UPLOAD_PHOTO,
-    payload: hazardApiRequest().post('/file/upload-photo', data, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-      },
-    }),
-  });
+      dispatch({
+        type: UPLOAD_PHOTO,
+        payload: hazardAuthorizeApiRequest(token).post(
+          '/file/upload-photo',
+          data,
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        ),
+      });
+    })
+    .catch(err => {});
 };
