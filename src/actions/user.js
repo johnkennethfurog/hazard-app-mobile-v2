@@ -1,7 +1,14 @@
 import SInfo from 'react-native-sensitive-info';
 
 import {hazardApiRequest, hazardAuthorizeApiRequest} from '../client/client';
-import {TOKEN, USER_INFO} from './types';
+import {
+  TOKEN,
+  USER_INFO,
+  CHECK_IF_LOCATING,
+  CHECK_IF_DISASTER_IS_ON,
+  START_LOCATING,
+  STOP_LOCATING,
+} from './types';
 import {isUndefined} from 'lodash';
 
 export const checkIfSignIn = callback => {
@@ -33,38 +40,6 @@ export const signin = (payload, callback) => {
     });
 };
 
-export const locateMe = (location, errorCallback) => {
-  SInfo.getItem(TOKEN, {})
-    .then(token => {
-      hazardAuthorizeApiRequest(token)
-        .post('/citizen/locate', location)
-        .then(x => {
-          console.log('sucess');
-        })
-        .catch(err => {
-          console.log('locateMe error', err);
-          errorCallback();
-        });
-    })
-    .catch(err => {});
-};
-
-export const stopLocating = errorCallback => {
-  SInfo.getItem(TOKEN, {})
-    .then(token => {
-      hazardAuthorizeApiRequest(token)
-        .post('/citizen/locate/stop', {})
-        .then(x => {
-          console.log('sucess');
-        })
-        .catch(err => {
-          console.log('locateMe error', err);
-          errorCallback();
-        });
-    })
-    .catch(err => {});
-};
-
 export const register = (payload, callback) => {
   hazardApiRequest()
     .post('/citizen/register', payload)
@@ -74,6 +49,56 @@ export const register = (payload, callback) => {
       SInfo.setItem(TOKEN, token, {}).then(() => {
         SInfo.setItem(USER_INFO, JSON.stringify(userInfo), {});
         callback();
+      });
+    })
+    .catch(err => {});
+};
+
+export const locateMe = location => dispatch => {
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      dispatch({
+        type: START_LOCATING,
+        payload: hazardAuthorizeApiRequest(token).post(
+          '/citizen/locate',
+          location,
+        ),
+      });
+    })
+    .catch(err => {});
+};
+
+export const stopLocating = () => dispatch => {
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      dispatch({
+        type: STOP_LOCATING,
+        payload: hazardAuthorizeApiRequest(token).post(
+          '/citizen/locate/stop',
+          {},
+        ),
+      });
+    })
+    .catch(err => {});
+};
+
+export const checkIfLocatingIsActive = () => dispatch => {
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      dispatch({
+        type: CHECK_IF_DISASTER_IS_ON,
+        payload: hazardAuthorizeApiRequest(token).get('/config/DISASTER_ON'),
+      });
+    })
+    .catch(err => {});
+};
+
+export const checkifUserIsLocating = () => dispatch => {
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      dispatch({
+        type: CHECK_IF_LOCATING,
+        payload: hazardAuthorizeApiRequest(token).get('/citizen/locate/check'),
       });
     })
     .catch(err => {});

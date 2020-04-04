@@ -168,14 +168,8 @@ class ComposeScreen extends React.Component {
             HAZARD LEVEL :
           </Text>
           <AirbnbRating
-            count={5}
-            reviews={[
-              'Moderate',
-              'Serious!',
-              'Extreme!',
-              'Life Threatening!',
-              'Disaster!',
-            ]}
+            count={3}
+            reviews={['Low Risk', 'Moderate Risk!', 'High Risk!!']}
             selectedColor={Colors.red}
             reviewColor={Colors.red}
             defaultRating={1}

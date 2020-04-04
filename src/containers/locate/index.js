@@ -1,20 +1,30 @@
 import React from 'react';
-import {Text, View, TouchableOpacity, Dimensions} from 'react-native';
+import {Text, View, TouchableOpacity, Dimensions, Alert} from 'react-native';
 import LottieView from 'lottie-react-native';
-import Colors from '../../utils/colors';
-import {locateMe, stopLocating} from '../../actions/user';
+import {connect} from 'react-redux';
+import {withNavigation} from 'react-navigation';
 
-import {getCurrentLocation} from '../../utils/maps-utils';
+import Loading from '../../components/loading';
+import Colors from '../../utils/colors';
+import {
+  locateMe,
+  stopLocating,
+  checkIfLocatingIsActive,
+  checkifUserIsLocating,
+} from '../../actions/user';
+
+import {
+  getCurrentLocation,
+  getCurrentLocatingState,
+} from '../../utils/maps-utils';
 
 import styles from './styles';
 const viewHeight = Dimensions.get('window').height * 0.2;
 
 class LocateScreen extends React.Component {
-  state = {
-    isLocating: false,
-  };
-
-  componentDidMount() {}
+  componentDidMount() {
+    this.props.dispatch(checkifUserIsLocating());
+  }
 
   toggleLocating = isLocating => {
     if (isLocating) {
@@ -24,26 +34,20 @@ class LocateScreen extends React.Component {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-
-          //console.log('currentPosition', currentPosition);
-
-          locateMe(currentPosition, () => {
-            console.log('error toggleLocating');
-          });
+          console.log('currentPosition', currentPosition);
+          this.props.dispatch(locateMe(currentPosition));
         })
         .catch(error => {
           console.log('currentPosition - error', error);
+          this.setState({isLocating: false});
         });
     } else {
-      stopLocating(() => {
-        console.log('error stop Locating');
-      });
+      this.props.dispatch(stopLocating());
     }
-    this.setState({isLocating});
   };
 
   render() {
-    const {isLocating} = this.state;
+    const {allowLocating, isLocating, isLoading} = this.props;
 
     return (
       <View style={styles.container}>
@@ -91,9 +95,17 @@ class LocateScreen extends React.Component {
             </TouchableOpacity>
           )}
         </View>
+        <Loading isVisible={isLoading} />
       </View>
     );
   }
 }
 
-export default LocateScreen;
+const mapStateToProps = state => {
+  return {
+    isLocating: state.citizen.isLocating,
+    isLoading: state.citizen.isLoading,
+  };
+};
+
+export default connect(mapStateToProps)(withNavigation(LocateScreen));

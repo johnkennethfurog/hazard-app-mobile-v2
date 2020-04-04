@@ -35,6 +35,7 @@ const getAxiosClient = async (
     response => response,
     error => {
       if (error.response) {
+        console.log('error data', error.response.data);
         Alert.alert(error.response.data.message);
       }
       throw error;
