@@ -34,9 +34,7 @@ target 'hazardMobile' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'react-native-sensitive-info', :path => '../node_modules/react-native-sensitive-info'
 
-  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 
   target 'hazardMobileTests' do
     inherit! :search_paths

@@ -10,6 +10,7 @@ export const SIGN_IN = 'SIGN_IN';
 
 export const TOKEN = 'TOKEN';
 export const USER_INFO = 'USER_INFO';
+export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
 
 export const CHECK_IF_LOCATING = 'CHECK_IF_LOCATING';
 export const CHECK_IF_DISASTER_IS_ON = 'CHECK_IF_DISASTER_IS_ON';

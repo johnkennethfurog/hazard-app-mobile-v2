@@ -18,8 +18,8 @@ import {signin} from '../../actions/user';
 
 class SignInScreen extends React.Component {
   state = {
-    email: 'johnkennethfurog@gmail.com',
-    pass: 'fulerisu',
+    email: '',
+    pass: '',
   };
 
   onLoginClicked = () => {

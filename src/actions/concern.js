@@ -78,25 +78,27 @@ export const uploadPhoto = photo => dispatch => {
     .then(token => {
       const data = new FormData();
       data.append('photo', {
-        name: '',
+        name: 'photo',
+        type: 'image/*',
         uri:
           Platform.OS === 'android'
             ? photo.uri
             : photo.uri.replace('file://', ''),
       });
 
+      console.log('data', data);
       dispatch({
         type: UPLOAD_PHOTO,
-        payload: hazardAuthorizeApiRequest(token).post(
-          '/file/upload-photo',
-          data,
-          {
+        payload: hazardAuthorizeApiRequest(token)
+          .post('/service/upload-photo', data, {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'multipart/form-data',
             },
-          },
-        ),
+          })
+          .catch(error => {
+            console.log('upload error', error);
+          }),
       });
     })
     .catch(err => {});

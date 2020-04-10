@@ -27,7 +27,6 @@ const Loading = ({isVisible}) => {
       </View>
     );
   } else {
-    console.log('Loading not visible');
     return null;
   }
 };

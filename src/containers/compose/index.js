@@ -4,7 +4,10 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
   Image,
+  ScrollView,
+  Keyboard,
   Button,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
@@ -39,7 +42,19 @@ let self;
 class ComposeScreen extends React.Component {
   static navigationOptions = {
     headerRight: () => (
-      <Button onPress={() => self.onSubmit()} title="Submit" />
+      <TouchableOpacity
+        style={{paddingRight: 10}}
+        onPress={() => {
+          self.onSubmit();
+        }}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            color: 'black',
+          }}>
+          Submit
+        </Text>
+      </TouchableOpacity>
     ),
   };
 
@@ -49,6 +64,7 @@ class ComposeScreen extends React.Component {
     concern: '',
     hazardImage: null,
     urgencyLevel: 1,
+    showRating: false,
   };
 
   onSubmit = () => {
@@ -80,6 +96,7 @@ class ComposeScreen extends React.Component {
     const {uploadedPhoto} = this.props;
     const payload = this.state;
     payload.photo = uploadedPhoto;
+    console.log('payload', payload);
     this.props.dispatch(
       reportConcern(this.state, () => {
         this.props.navigation.goBack();
@@ -89,6 +106,16 @@ class ComposeScreen extends React.Component {
 
   componentDidMount() {
     self = this;
+
+    this.keyboardWillShowSub = Keyboard.addListener(
+      'keyboardDidShow',
+      this.keyboardWillShow,
+    );
+    this.keyboardWillHideSub = Keyboard.addListener(
+      'keyboardDidHide',
+      this.keyboardWillHide,
+    );
+
     this.props.dispatch(getBarangays());
     this.props.dispatch(getConcernTypes());
   }
@@ -100,6 +127,19 @@ class ComposeScreen extends React.Component {
       this.sendPost();
     }
   }
+
+  componentWillUnmount() {
+    this.keyboardWillShowSub.remove();
+    this.keyboardWillHideSub.remove();
+  }
+
+  keyboardWillShow = event => {
+    this.setState({showRating: false});
+  };
+
+  keyboardWillHide = event => {
+    this.setState({showRating: true});
+  };
 
   onFinishedRating = urgencyLevel => {
     this.setState({urgencyLevel});
@@ -129,88 +169,96 @@ class ComposeScreen extends React.Component {
   };
 
   render() {
-    const {concern, hazardImage} = this.state;
+    const {concern, hazardImage, showRating} = this.state;
     const {barangays, concernTypes, isLoading} = this.props;
 
     return (
-      <View style={styles.container}>
-        <Text style={[styles.txtLabel, {marginTop: 0}]}>HAZARD TYPE</Text>
-        <RNPickerSelect
-          style={pickerStyles}
-          onValueChange={concernType => this.setState({concernType})}
-          items={concernTypes}
-        />
-
-        <Text style={[styles.txtLabel]}>BARANGAYS</Text>
-        <RNPickerSelect
-          style={pickerStyles}
-          onValueChange={barangay => this.setState({barangay})}
-          items={barangays}
-        />
-
-        <Text style={styles.txtLabel}>REMARKS</Text>
-        <TextInput
-          multiline
-          autoCapitalize="none"
-          numberOfLines={4}
-          style={styles.txtInput}
-          onChangeText={concern => this.setState({concern})}
-          value={concern}
-          placeholder={'Describe what happen ...'}
-        />
-        <View
-          style={{
-            alignItems: 'center',
-            backgroundColor: Colors.white,
-            paddingBottom: 25,
-          }}>
-          <Text style={[styles.txtLabel, {marginBottom: 0}]}>
-            HAZARD LEVEL :
-          </Text>
-          <AirbnbRating
-            count={3}
-            reviews={['Low Risk', 'Moderate Risk!', 'High Risk!!']}
-            selectedColor={Colors.red}
-            reviewColor={Colors.red}
-            defaultRating={1}
-            size={45}
-            onFinishedRating={this.onFinishedRating}
+      <ScrollView contentContainerStyle={{flex: 1}}>
+        <View style={styles.container}>
+          <Text style={[styles.txtLabel, {marginTop: 0}]}>HAZARD TYPE</Text>
+          <RNPickerSelect
+            style={pickerStyles}
+            onValueChange={concernType => this.setState({concernType})}
+            items={concernTypes}
           />
-        </View>
-        <View
-          style={{
-            backgroundColor: Colors.white,
-            padding: 5,
-            alignItems: 'flex-end',
-            dispaly: 'flex',
-          }}>
-          <TouchableOpacity onPress={this.onCameraTapped}>
-            <Image
-              style={{width: 35, height: 35}}
-              source={require('../../images/camera.png')}
-            />
-          </TouchableOpacity>
-        </View>
-        {hazardImage && (
-          <View>
-            <Image source={hazardImage} style={{width: '100%', height: 150}} />
-            <TouchableOpacity
+
+          <Text style={[styles.txtLabel]}>BARANGAYS</Text>
+          <RNPickerSelect
+            style={pickerStyles}
+            onValueChange={barangay => this.setState({barangay})}
+            items={barangays}
+          />
+
+          <Text style={styles.txtLabel}>REMARKS</Text>
+
+          <TextInput
+            multiline
+            autoCapitalize="none"
+            numberOfLines={4}
+            style={styles.txtInput}
+            onChangeText={concern => this.setState({concern})}
+            value={concern}
+            placeholder={'Describe what happen ...'}
+          />
+          {showRating && (
+            <View
               style={{
-                position: 'absolute',
-                right: 5,
-                top: 5,
-              }}
-              onPress={this.onRemoveImage}>
+                alignItems: 'center',
+                backgroundColor: Colors.white,
+                paddingBottom: 25,
+              }}>
+              <Text style={[styles.txtLabel, {marginBottom: 0}]}>
+                HAZARD LEVEL :
+              </Text>
+              <AirbnbRating
+                count={3}
+                reviews={['Low Risk', 'Moderate Risk!', 'High Risk!!']}
+                selectedColor={Colors.red}
+                reviewColor={Colors.red}
+                defaultRating={1}
+                size={45}
+                onFinishedRating={this.onFinishedRating}
+              />
+            </View>
+          )}
+          <View
+            style={{
+              backgroundColor: Colors.white,
+              padding: 5,
+              alignItems: 'flex-end',
+              dispaly: 'flex',
+            }}>
+            <TouchableOpacity onPress={this.onCameraTapped}>
               <Image
-                style={{height: 30, width: 30}}
-                source={require('../../images/delete.png')}
+                style={{width: 35, height: 35}}
+                source={require('../../images/camera.png')}
               />
             </TouchableOpacity>
           </View>
-        )}
+          {hazardImage && (
+            <View>
+              <Image
+                source={hazardImage}
+                style={{width: '100%', height: 150}}
+              />
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  right: 5,
+                  top: 5,
+                }}
+                onPress={this.onRemoveImage}>
+                <Image
+                  style={{height: 30, width: 30}}
+                  source={require('../../images/delete.png')}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
 
-        <Loading isVisible={isLoading} />
-      </View>
+          <Loading isVisible={isLoading} />
+        </View>
+      </ScrollView>
     );
   }
 }

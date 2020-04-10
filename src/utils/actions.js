@@ -17,7 +17,7 @@ export const Actions = [
   },
   {
     text: 'Lessons',
-    icon: require('../images/send.png'),
+    icon: require('../images/info.png'),
     name: 'bt_lessons',
     position: 2,
     color: Colors.red,

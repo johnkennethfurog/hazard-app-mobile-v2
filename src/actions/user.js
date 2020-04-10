@@ -8,6 +8,7 @@ import {
   CHECK_IF_DISASTER_IS_ON,
   START_LOCATING,
   STOP_LOCATING,
+  CHANGE_PASSWORD,
 } from './types';
 import {isUndefined} from 'lodash';
 
@@ -20,6 +21,13 @@ export const checkIfSignIn = callback => {
 export const signOut = callback => {
   SInfo.deleteItem(TOKEN, {}).then(() => {
     callback();
+  });
+};
+
+export const checkIfNeedToChangePass = callBack => {
+  SInfo.getItem(USER_INFO, {}).then(user => {
+    user = JSON.parse(user);
+    callBack(user.passwordIsGenerated);
   });
 };
 
@@ -99,6 +107,30 @@ export const checkifUserIsLocating = () => dispatch => {
       dispatch({
         type: CHECK_IF_LOCATING,
         payload: hazardAuthorizeApiRequest(token).get('/citizen/locate/check'),
+      });
+    })
+    .catch(err => {});
+};
+
+export const changePassword = (password, oldPass, callBack) => dispatch => {
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      dispatch({
+        type: CHANGE_PASSWORD,
+        payload: hazardAuthorizeApiRequest(token)
+          .put('/citizen/changepassword', {
+            password,
+            oldPass,
+          })
+          .then(rspns => {
+            SInfo.getItem(USER_INFO, {}).then(userInfo => {
+              userInfo = JSON.parse(userInfo);
+              userInfo.passwordIsGenerated = false;
+              SInfo.setItem(USER_INFO, JSON.stringify(userInfo), {});
+              callBack();
+            });
+            return rspns;
+          }),
       });
     })
     .catch(err => {});

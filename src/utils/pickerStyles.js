@@ -7,6 +7,7 @@ const pickerSelectStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     backgroundColor: 'white',
+    color: Colors.gray,
     paddingRight: 30, // to ensure the text is never behind the icon
   },
   inputAndroid: {
@@ -14,6 +15,7 @@ const pickerSelectStyles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     backgroundColor: 'white',
+    color: Colors.gray,
     paddingRight: 30, // to ensure the text is never behind the icon
   },
 });

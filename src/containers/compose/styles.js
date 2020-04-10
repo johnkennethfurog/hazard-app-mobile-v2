@@ -4,10 +4,12 @@ import Colors from '../../utils/colors';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexGrow: 1,
     padding: 20,
   },
   txtInput: {
     flex: 1,
+    textAlignVertical: 'top',
     padding: 8,
     backgroundColor: Colors.white,
   },

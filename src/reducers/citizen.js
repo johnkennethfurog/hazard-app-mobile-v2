@@ -5,6 +5,7 @@ import {
   CHECK_IF_DISASTER_IS_ON,
   START_LOCATING,
   STOP_LOCATING,
+  CHANGE_PASSWORD,
 } from '../actions/types';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
 
 export default function concern(state = initialState, action) {
   switch (action.type) {
+    case `${CHANGE_PASSWORD}_REJECTED`:
     case `${START_LOCATING}_REJECTED`:
     case `${STOP_LOCATING}_REJECTED`:
     case `${CHECK_IF_DISASTER_IS_ON}_REJECTED`:
@@ -26,6 +28,7 @@ export default function concern(state = initialState, action) {
       };
     }
 
+    case `${CHANGE_PASSWORD}_PENDING`:
     case `${START_LOCATING}_PENDING`:
     case `${STOP_LOCATING}_PENDING`:
     case `${CHECK_IF_DISASTER_IS_ON}_PENDING`:
@@ -67,6 +70,15 @@ export default function concern(state = initialState, action) {
       return {
         ...state,
         isLocating,
+        isLoading: false,
+      };
+    }
+
+    case `${CHANGE_PASSWORD}_FULFILLED`: {
+      const message = action.payload.data.message;
+      Alert.alert(message);
+      return {
+        ...state,
         isLoading: false,
       };
     }

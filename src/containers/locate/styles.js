@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   lottieView: {
-    height: 400,
-    width: 400,
+    width: 300,
+    height: 300,
     alignItems: 'center',
     justifyContent: 'center',
   },

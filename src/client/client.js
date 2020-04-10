@@ -38,6 +38,7 @@ const getAxiosClient = async (
         console.log('error data', error.response.data);
         Alert.alert(error.response.data.message);
       }
+      console.log('error error', error);
       throw error;
     },
   );

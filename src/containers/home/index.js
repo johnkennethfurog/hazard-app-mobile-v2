@@ -13,30 +13,52 @@ import {
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
 import {FloatingAction} from 'react-native-floating-action';
+import {isEmpty} from 'lodash';
+import Loading from '../../components/loading';
 
 import styles from './styles';
 import {getConcerns} from '../../actions/concern';
+import {changePassword, checkIfNeedToChangePass} from '../../actions/user';
 import {getImageSource} from '../../utils/helper';
 import Colors from '../../utils/colors';
 import {Actions} from '../../utils/actions';
 import ConcernCard from '../../components/concern-card';
+import ChangePassword from '../../components/change-password';
 import {signOut} from '../../actions/user';
 
 let self;
 class HomeScreen extends React.Component {
+  state = {
+    openChangePass: false,
+    oldPassword: '',
+    password: '',
+    confirmPassword: '',
+  };
+
   static navigationOptions = {
     headerRight: () => (
-      <Button
+      <TouchableOpacity
+        style={{paddingRight: 10}}
         onPress={() => {
           self.onLogout();
-        }}
-        title="Logout"
-      />
+        }}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            color: 'black',
+          }}>
+          Logout
+        </Text>
+      </TouchableOpacity>
     ),
   };
+
   componentDidMount() {
     self = this;
     this.props.dispatch(getConcerns());
+    checkIfNeedToChangePass(openChangePass => {
+      this.setState({openChangePass});
+    });
   }
 
   onLogout = () => {
@@ -53,6 +75,12 @@ class HomeScreen extends React.Component {
     ]);
   };
 
+  onCloseModal = () => {
+    this.setState({
+      openChangePass: false,
+    });
+  };
+
   onDisasterClicked = lesson => {
     this.props.navigation.navigate('Lecture', {lesson});
   };
@@ -67,8 +95,35 @@ class HomeScreen extends React.Component {
     }
   };
 
+  onPressChangeBtn = () => {
+    const {password, oldPassword, confirmPassword} = this.state;
+
+    if ((isEmpty(password), isEmpty(oldPassword), isEmpty(confirmPassword))) {
+      Alert.alert('All fields are required');
+      return;
+    }
+
+    if (confirmPassword !== password) {
+      Alert.alert('Password does not match');
+      return;
+    }
+
+    this.props.dispatch(
+      changePassword(password, oldPassword, () => {
+        this.setState({
+          openChangePass: false,
+          password: '',
+          oldPassword: '',
+          confirmPassword: '',
+        });
+      }),
+    );
+  };
+
   render() {
-    const {concerns} = this.props;
+    const {concerns, isChangingPassword, isLoading} = this.props;
+    const {openChangePass, password, oldPassword, confirmPassword} = this.state;
+
     return (
       <SafeAreaView style={styles.container}>
         <FlatList
@@ -83,6 +138,25 @@ class HomeScreen extends React.Component {
             this.onActionClicked(name);
           }}
         />
+        <ChangePassword
+          closeModal={this.onCloseModal}
+          oldPass={oldPassword}
+          confirmPass={confirmPassword}
+          pass={password}
+          onPressChangeBtn={this.onPressChangeBtn}
+          onPassChange={password => {
+            this.setState({password});
+          }}
+          onOldPassChange={oldPassword => {
+            this.setState({oldPassword});
+          }}
+          onConfirmPassChange={confirmPassword => {
+            this.setState({confirmPassword});
+          }}
+          isOpen={openChangePass}
+          isChangingPassword={isChangingPassword}
+        />
+        <Loading isVisible={isLoading} />
       </SafeAreaView>
     );
   }
@@ -90,7 +164,9 @@ class HomeScreen extends React.Component {
 
 const mapStateToProps = state => {
   return {
+    isLoading: state.concern.isLoading,
     concerns: state.concern.concerns,
+    isChangingPassword: state.citizen.isLoading,
   };
 };
 

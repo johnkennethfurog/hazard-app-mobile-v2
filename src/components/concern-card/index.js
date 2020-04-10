@@ -92,8 +92,7 @@ const LeaveCard = ({concern}) => {
             marginTop: 10,
           }}
           source={{
-            uri:
-              'https://res.cloudinary.com/db2qrpicm/image/upload/v1583668812/zbkd4gmbucdm2s4d1rar.jpg',
+            uri: concern.photo.url,
           }}
         />
       )}

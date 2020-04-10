@@ -21,11 +21,11 @@ import {getBarangays} from '../../actions/concern';
 
 class RegistrationScreen extends React.Component {
   state = {
-    name: 'jk fuorg',
-    email: 'johnkennethfurog@gmail.com',
+    name: '',
+    email: '',
     barangay: '',
-    address: 'Santa Rosa Laguna',
-    mobileNumber: '+639994811893',
+    address: '',
+    mobileNumber: '',
   };
 
   componentDidMount() {

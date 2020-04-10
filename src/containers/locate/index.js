@@ -20,6 +20,7 @@ import {
 
 import styles from './styles';
 const viewHeight = Dimensions.get('window').height * 0.2;
+const screenWidth = Dimensions.get('window').width;
 
 class LocateScreen extends React.Component {
   componentDidMount() {
@@ -68,19 +69,31 @@ class LocateScreen extends React.Component {
         </View>
         <View style={styles.centerItem}>
           {isLocating && (
-            <LottieView
-              source={require('../../animation/locating.json')}
-              style={styles.lottieView}
-              autoPlay
-              loop>
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <LottieView
+                source={require('../../animation/locating.json')}
+                style={styles.lottieView}
+                autoPlay
+                loop
+              />
               <TouchableOpacity
-                style={styles.buttonTrigger}
+                style={[
+                  styles.buttonTrigger,
+                  {
+                    position: 'absolute',
+                  },
+                ]}
                 onPress={() => {
                   this.toggleLocating(false);
                 }}>
                 <Text style={styles.buttonLabel}>Stop Locating</Text>
               </TouchableOpacity>
-            </LottieView>
+            </View>
           )}
 
           {!isLocating && (
