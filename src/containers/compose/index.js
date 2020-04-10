@@ -64,7 +64,8 @@ class ComposeScreen extends React.Component {
     concern: '',
     hazardImage: null,
     urgencyLevel: 1,
-    showRating: false,
+    address: '',
+    showRating: true,
   };
 
   onSubmit = () => {
@@ -96,7 +97,6 @@ class ComposeScreen extends React.Component {
     const {uploadedPhoto} = this.props;
     const payload = this.state;
     payload.photo = uploadedPhoto;
-    console.log('payload', payload);
     this.props.dispatch(
       reportConcern(this.state, () => {
         this.props.navigation.goBack();
@@ -169,7 +169,7 @@ class ComposeScreen extends React.Component {
   };
 
   render() {
-    const {concern, hazardImage, showRating} = this.state;
+    const {concern, hazardImage, showRating, address} = this.state;
     const {barangays, concernTypes, isLoading} = this.props;
 
     return (
@@ -189,8 +189,24 @@ class ComposeScreen extends React.Component {
             items={barangays}
           />
 
-          <Text style={styles.txtLabel}>REMARKS</Text>
+          <Text style={styles.txtLabel}>ADDRESS</Text>
+          <TextInput
+            multiline
+            autoCapitalize="none"
+            numberOfLines={3}
+            style={[
+              {
+                textAlignVertical: 'top',
+                padding: 8,
+                backgroundColor: Colors.white,
+              },
+            ]}
+            onChangeText={address => this.setState({address})}
+            value={address}
+            placeholder={'Street Address / Purok / Phase / Landmark'}
+          />
 
+          <Text style={styles.txtLabel}>REMARKS</Text>
           <TextInput
             multiline
             autoCapitalize="none"
@@ -221,21 +237,24 @@ class ComposeScreen extends React.Component {
               />
             </View>
           )}
-          <View
-            style={{
-              backgroundColor: Colors.white,
-              padding: 5,
-              alignItems: 'flex-end',
-              dispaly: 'flex',
-            }}>
-            <TouchableOpacity onPress={this.onCameraTapped}>
-              <Image
-                style={{width: 35, height: 35}}
-                source={require('../../images/camera.png')}
-              />
-            </TouchableOpacity>
-          </View>
-          {hazardImage && (
+
+          {showRating && (
+            <View
+              style={{
+                backgroundColor: Colors.white,
+                padding: 5,
+                alignItems: 'flex-end',
+                dispaly: 'flex',
+              }}>
+              <TouchableOpacity onPress={this.onCameraTapped}>
+                <Image
+                  style={{width: 35, height: 35}}
+                  source={require('../../images/camera.png')}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+          {hazardImage && showRating && (
             <View>
               <Image
                 source={hazardImage}

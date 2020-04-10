@@ -6,91 +6,38 @@ import Colors from '../../utils/colors';
 import styles from './styles';
 import moment from 'moment';
 
-const LeaveCard = ({concern}) => {
+const ConcernCard = ({concern}) => {
   const statColor = concern.status === 'Pending' ? 'gray' : 'green';
 
   return (
-    <View
-      style={{
-        display: 'flex',
-        flex: 1,
-        backgroundColor: Colors.white,
-        marginVertical: 16,
-        paddingHorizontal: 12,
-        paddingVertical: 16,
-        elevation: 5,
-      }}>
-      <Text
-        style={{
-          fontSize: 11,
-          color: statColor,
-          fontWeight: 'bold',
-          alignSelf: 'flex-end',
-        }}>
-        {concern.status}
-      </Text>
-      <View
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          marginVertical: 8,
-          flexDirection: 'row',
-        }}>
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: 'bold',
-            color: Colors.red,
-          }}>
-          {concern.concernType.name}
-        </Text>
-        <Text
-          style={{
-            fontSize: 8,
-            color: Colors.gray,
-            marginHorizontal: 5,
-          }}>
-          {'|'}
-        </Text>
-        <Text
-          style={{
-            fontSize: 12,
-            color: Colors.gray,
-          }}>
-          {concern.barangay.name}
-        </Text>
-        <Text
-          style={{
-            fontSize: 8,
-            color: Colors.gray,
-            marginHorizontal: 5,
-          }}>
-          {'|'}
-        </Text>
+    <View style={styles.container}>
+      <Text style={[styles.status, {color: statColor}]}>{concern.status}</Text>
+      <View style={[styles.row, {marginTop: 8, marginBottom: 1}]}>
+        <Text style={styles.concernType}>{concern.concernType.name}</Text>
+        <Text style={styles.pipe}>{'|'}</Text>
+        <Text style={styles.date}>{moment(concern.date).fromNow()}</Text>
+      </View>
 
-        <Text
+      <View style={styles.row}>
+        <Image
+          resizeMode="cover"
           style={{
-            fontSize: 12,
-            color: Colors.gray,
-          }}>
-          {moment(concern.date).fromNow()}
+            marginLeft: -5,
+            width: 15,
+            height: 15,
+          }}
+          source={require('../../images/place.png')}
+        />
+        <Text style={styles.address}>
+          {concern.barangay.name} , {concern.address}
         </Text>
       </View>
 
-      <Text
-        style={{
-          fontSize: 14,
-          color: Colors.dimgray,
-        }}>
-        {concern.concern}
-      </Text>
+      <Text style={styles.concern}>{concern.concern}</Text>
 
       {concern.photo && (
         <Image
-          style={{
-            height: 200,
-            marginTop: 10,
-          }}
+          style={styles.image}
           source={{
             uri: concern.photo.url,
           }}
@@ -100,4 +47,4 @@ const LeaveCard = ({concern}) => {
   );
 };
 
-export default LeaveCard;
+export default ConcernCard;

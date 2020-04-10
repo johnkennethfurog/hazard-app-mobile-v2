@@ -14,7 +14,8 @@ import {isUndefined} from 'lodash';
 
 export const checkIfSignIn = callback => {
   SInfo.getItem(TOKEN, {}).then(token => {
-    callback(!isUndefined(token));
+    console.log('token', token);
+    callback(token);
   });
 };
 
@@ -31,7 +32,7 @@ export const checkIfNeedToChangePass = callBack => {
   });
 };
 
-export const signin = (payload, callback) => {
+export const signin = (payload, callback, errorCallback) => {
   console.log('payload', payload);
   hazardApiRequest()
     .post('/citizen/signin', payload)
@@ -44,6 +45,7 @@ export const signin = (payload, callback) => {
       });
     })
     .catch(err => {
+      errorCallback();
       console.log('err', err);
     });
 };

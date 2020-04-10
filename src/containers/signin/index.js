@@ -15,11 +15,13 @@ import CustomizeTextInput from '../../components/text-input';
 import Colors from '../../utils/colors';
 import styles from './styles';
 import {signin} from '../../actions/user';
+import Loading from '../../components/loading';
 
 class SignInScreen extends React.Component {
   state = {
-    email: '',
-    pass: '',
+    email: 'johnkennethfurog@gmail.com',
+    pass: 'password',
+    isLoading: false,
   };
 
   onLoginClicked = () => {
@@ -30,9 +32,16 @@ class SignInScreen extends React.Component {
       return;
     }
 
-    signin(this.state, () => {
-      this.props.navigation.navigate('Home');
-    });
+    this.setState({isLoading: true});
+    signin(
+      this.state,
+      () => {
+        this.props.navigation.navigate('Home');
+      },
+      () => {
+        this.setState({isLoading: false});
+      },
+    );
   };
 
   onRegisterClicked = () => {
@@ -40,7 +49,7 @@ class SignInScreen extends React.Component {
   };
 
   render() {
-    const {email, pass} = this.state;
+    const {email, pass, isLoading} = this.state;
 
     return (
       <View style={styles.container}>
@@ -48,25 +57,29 @@ class SignInScreen extends React.Component {
           style={{
             backgroundColor: 'white',
             borderRadius: 8,
-            elevation: 5,
             padding: 20,
             width: '100%',
           }}>
           <View
             style={{
-              margin: 20,
+              marginBottom: 10,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{color: 'gray', fontSize: 25, fontWeight: 'bold'}}>
-              HAZARD
-            </Text>
+            <Image
+              resizeMode="cover"
+              style={{
+                width: 190,
+                height: 160,
+              }}
+              source={require('../../images/icon.png')}
+            />
             <Text style={{color: 'gray', fontSize: 12}}>
               LOGIN TO YOUR ACCOUNT
             </Text>
           </View>
 
-          <View style={{margin: 10}}>
+          <View style={{margin: 10, marginTop: 0}}>
             <CustomizeTextInput
               onChangeText={email => this.setState({email})}
               placeholder="Email"
@@ -110,6 +123,7 @@ class SignInScreen extends React.Component {
             </View>
           </View>
         </View>
+        <Loading isVisible={isLoading} />
       </View>
     );
   }

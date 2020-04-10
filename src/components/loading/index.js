@@ -21,7 +21,11 @@ const Loading = ({isVisible}) => {
     return (
       <View style={styles.container}>
         <Animated.Image
-          style={{height: 70, width: 70, transform: [{rotate: spin}]}}
+          style={{
+            height: 70,
+            width: 70,
+            transform: [{rotate: spin}],
+          }}
           source={require('../../images/fire.png')}
         />
       </View>

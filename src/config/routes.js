@@ -16,6 +16,8 @@ import ComposeScreen from '../containers/compose';
 import LocateScreen from '../containers/locate';
 import LessonsScreen from '../containers/lessons';
 import RegistrationScreen from '../containers/registration';
+import ProfileScreen from '../containers/profile';
+import HotlineScreen from '../containers/hotline';
 
 const HomeStack = createStackNavigator(
   {
@@ -24,6 +26,8 @@ const HomeStack = createStackNavigator(
     Compose: ComposeScreen,
     Locate: LocateScreen,
     Lessons: LessonsScreen,
+    Profile: ProfileScreen,
+    Hotline: HotlineScreen,
   },
   {
     initialRouteName: 'Home',

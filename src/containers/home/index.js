@@ -14,17 +14,20 @@ import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
 import {FloatingAction} from 'react-native-floating-action';
 import {isEmpty} from 'lodash';
-import Loading from '../../components/loading';
 
 import styles from './styles';
 import {getConcerns} from '../../actions/concern';
-import {changePassword, checkIfNeedToChangePass} from '../../actions/user';
+import {
+  changePassword,
+  checkIfNeedToChangePass,
+  signOut,
+} from '../../actions/user';
 import {getImageSource} from '../../utils/helper';
 import Colors from '../../utils/colors';
 import {Actions} from '../../utils/actions';
 import ConcernCard from '../../components/concern-card';
 import ChangePassword from '../../components/change-password';
-import {signOut} from '../../actions/user';
+import Loading from '../../components/loading';
 
 let self;
 class HomeScreen extends React.Component {
@@ -92,6 +95,8 @@ class HomeScreen extends React.Component {
       this.props.navigation.navigate('Compose');
     } else if (action === 'bt_lessons') {
       this.props.navigation.navigate('Lessons');
+    } else if (action === 'bt_hotline') {
+      this.props.navigation.navigate('Hotline');
     }
   };
 
@@ -120,6 +125,10 @@ class HomeScreen extends React.Component {
     );
   };
 
+  renderIcon = () => {
+    return <Text style={{color: 'white', width: 20, height: 20}}>KK</Text>;
+  };
+
   render() {
     const {concerns, isChangingPassword, isLoading} = this.props;
     const {openChangePass, password, oldPassword, confirmPassword} = this.state;
@@ -134,6 +143,7 @@ class HomeScreen extends React.Component {
         <FloatingAction
           actions={Actions}
           color={Colors.red}
+          floatingIcon={require('../../images/menu.png')}
           onPressItem={name => {
             this.onActionClicked(name);
           }}
