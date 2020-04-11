@@ -6,10 +6,11 @@ export const GET_BARANGAYS = 'GET_BARANGAYS';
 export const GET_CONCERN_TYPES = 'GET_CONCERN_TYPES';
 
 export const GET_LESSONS = 'GET_LESSONS';
-export const SIGN_IN = 'SIGN_IN';
 
-export const TOKEN = 'TOKEN';
-export const USER_INFO = 'USER_INFO';
+export const SIGN_IN = 'SIGN_IN';
+export const REGISTER = 'REGISTER';
+export const UPDATE_PROFILE = 'UPDATE_PROFILE';
+export const GET_PROFILE = 'GET_PROFILE';
 export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
 
 export const CHECK_IF_LOCATING = 'CHECK_IF_LOCATING';
@@ -18,3 +19,7 @@ export const START_LOCATING = 'START_LOCATING';
 export const STOP_LOCATING = 'STOP_LOCATING';
 
 export const GET_HOTLINES = 'GET_HOTLINES';
+
+// USED FOR STORING DATA
+export const TOKEN = 'TOKEN';
+export const USER_INFO = 'USER_INFO';

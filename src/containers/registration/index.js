@@ -18,6 +18,7 @@ import Colors from '../../utils/colors';
 import styles from './styles';
 import {register} from '../../actions/user';
 import {getBarangays} from '../../actions/concern';
+import Loading from '../../components/loading';
 
 class RegistrationScreen extends React.Component {
   state = {
@@ -38,19 +39,21 @@ class RegistrationScreen extends React.Component {
 
   onRegisterClicked = () => {
     const {name, email, mobileNumber, barangay} = this.state;
-    if (isEmpty(email) || isEmpty(barangay)) {
-      Alert.alert('Email and Barangay is required');
+    if (isEmpty(name) || isEmpty(email) || isEmpty(barangay)) {
+      Alert.alert('Name and Barangay are required fields');
       return;
     }
 
-    register(this.state, () => {
-      this.props.navigation.navigate('Home');
-    });
+    this.props.dispatch(
+      register(this.state, () => {
+        this.props.navigation.navigate('Home');
+      }),
+    );
   };
 
   render() {
     const {name, email, mobileNumber, address, barangay} = this.state;
-    const {barangays} = this.props;
+    const {barangays, isLoading} = this.props;
 
     return (
       <View style={styles.container}>
@@ -58,7 +61,6 @@ class RegistrationScreen extends React.Component {
           style={{
             backgroundColor: 'white',
             borderRadius: 8,
-            elevation: 5,
             padding: 20,
             width: '100%',
           }}>
@@ -87,13 +89,17 @@ class RegistrationScreen extends React.Component {
               onChangeText={email => this.setState({email})}
               placeholder="Email Address"
               value={email}
+              keyboardType="email-address"
               inputStyles={{marginTop: 8}}
             />
 
             <CustomizeTextInput
+              prefix={'+63'}
               onChangeText={mobileNumber => this.setState({mobileNumber})}
               placeholder="Contact Number"
               value={mobileNumber}
+              maxLength={10}
+              keyboardType="phone-pad"
               inputStyles={{marginTop: 8}}
             />
 
@@ -146,6 +152,7 @@ class RegistrationScreen extends React.Component {
             </View>
           </View>
         </View>
+        <Loading isVisible={isLoading} />
       </View>
     );
   }
@@ -155,6 +162,7 @@ const mapStateToProps = state => {
   const {barangays} = state.concern;
   return {
     barangays,
+    isLoading: state.citizen.isLoading,
   };
 };
 

@@ -9,12 +9,15 @@ import {
   START_LOCATING,
   STOP_LOCATING,
   CHANGE_PASSWORD,
+  UPDATE_PROFILE,
+  SIGN_IN,
+  REGISTER,
+  GET_PROFILE,
 } from './types';
 import {isUndefined} from 'lodash';
 
 export const checkIfSignIn = callback => {
   SInfo.getItem(TOKEN, {}).then(token => {
-    console.log('token', token);
     callback(token);
   });
 };
@@ -32,36 +35,42 @@ export const checkIfNeedToChangePass = callBack => {
   });
 };
 
-export const signin = (payload, callback, errorCallback) => {
-  console.log('payload', payload);
-  hazardApiRequest()
-    .post('/citizen/signin', payload)
-    .then(rspns => {
-      const {token, userInfo} = rspns.data.data;
-      console.log('token', token);
-      SInfo.setItem(TOKEN, token, {}).then(() => {
-        SInfo.setItem(USER_INFO, JSON.stringify(userInfo), {});
-        callback();
-      });
-    })
-    .catch(err => {
-      errorCallback();
-      console.log('err', err);
-    });
+export const signin = (payload, callback) => dispatch => {
+  dispatch({
+    type: SIGN_IN,
+    payload: hazardApiRequest()
+      .post('/citizen/signin', payload)
+      .then(rspns => {
+        const {token, userInfo} = rspns.data.data;
+        SInfo.setItem(TOKEN, token, {}).then(() => {
+          SInfo.setItem(USER_INFO, JSON.stringify(userInfo), {});
+          callback();
+        });
+
+        return rspns;
+      }),
+  });
 };
 
-export const register = (payload, callback) => {
-  hazardApiRequest()
-    .post('/citizen/register', payload)
-    .then(rspns => {
-      const {token, userInfo} = rspns.data.data;
-      console.log('token', token);
-      SInfo.setItem(TOKEN, token, {}).then(() => {
-        SInfo.setItem(USER_INFO, JSON.stringify(userInfo), {});
-        callback();
-      });
-    })
-    .catch(err => {});
+export const register = (payload, callback) => dispatch => {
+  payload.mobileNumber = '+63' + payload.mobileNumber;
+  dispatch({
+    type: REGISTER,
+    payload: hazardApiRequest()
+      .post('/citizen/register', payload)
+      .then(rspns => {
+        if (rspns.data) {
+          const {token, userInfo} = rspns.data.data;
+
+          SInfo.setItem(TOKEN, token, {}).then(() => {
+            SInfo.setItem(USER_INFO, JSON.stringify(userInfo), {});
+            callback();
+          });
+        }
+
+        return rspns;
+      }),
+  });
 };
 
 export const locateMe = location => dispatch => {
@@ -131,6 +140,50 @@ export const changePassword = (password, oldPass, callBack) => dispatch => {
               SInfo.setItem(USER_INFO, JSON.stringify(userInfo), {});
               callBack();
             });
+            return rspns;
+          }),
+      });
+    })
+    .catch(err => {});
+};
+
+export const getProfile = () => dispatch => {
+  SInfo.getItem(USER_INFO, {})
+    .then(profile => {
+      dispatch({
+        type: GET_PROFILE,
+        payload: JSON.parse(profile),
+      });
+    })
+    .catch(err => {});
+};
+
+export const updateProfile = ({
+  name,
+  email,
+  barangay,
+  address,
+  mobileNumber,
+}) => dispatch => {
+  mobileNumber = '+63' + mobileNumber;
+  const payload = {
+    name,
+    email,
+    barangay,
+    address,
+    mobileNumber,
+  };
+
+  console.log('payload', payload);
+
+  SInfo.getItem(TOKEN, {})
+    .then(token => {
+      dispatch({
+        type: UPDATE_PROFILE,
+        payload: hazardAuthorizeApiRequest(token)
+          .put('/citizen/updateprofile', payload)
+          .then(rspns => {
+            SInfo.setItem(USER_INFO, JSON.stringify(rspns.data.data), {});
             return rspns;
           }),
       });

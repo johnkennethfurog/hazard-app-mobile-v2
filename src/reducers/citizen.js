@@ -6,6 +6,10 @@ import {
   START_LOCATING,
   STOP_LOCATING,
   CHANGE_PASSWORD,
+  UPDATE_PROFILE,
+  SIGN_IN,
+  REGISTER,
+  GET_PROFILE,
 } from '../actions/types';
 
 const initialState = {
@@ -13,10 +17,14 @@ const initialState = {
   error: '',
   hazardConfig: {value: false},
   isLocating: false,
+  profile: {},
 };
 
 export default function concern(state = initialState, action) {
   switch (action.type) {
+    case `${SIGN_IN}_REJECTED`:
+    case `${REGISTER}_REJECTED`:
+    case `${UPDATE_PROFILE}_REJECTED`:
     case `${CHANGE_PASSWORD}_REJECTED`:
     case `${START_LOCATING}_REJECTED`:
     case `${STOP_LOCATING}_REJECTED`:
@@ -28,6 +36,9 @@ export default function concern(state = initialState, action) {
       };
     }
 
+    case `${SIGN_IN}_PENDING`:
+    case `${REGISTER}_PENDING`:
+    case `${UPDATE_PROFILE}_PENDING`:
     case `${CHANGE_PASSWORD}_PENDING`:
     case `${START_LOCATING}_PENDING`:
     case `${STOP_LOCATING}_PENDING`:
@@ -79,6 +90,45 @@ export default function concern(state = initialState, action) {
       Alert.alert(message);
       return {
         ...state,
+        isLoading: false,
+      };
+    }
+
+    case `${UPDATE_PROFILE}_FULFILLED`: {
+      const message = action.payload.data.message;
+      const profile = action.payload.data.data;
+      console.log(UPDATE_PROFILE, profile);
+      Alert.alert(message);
+      return {
+        ...state,
+        profile,
+        isLoading: false,
+      };
+    }
+
+    case `${SIGN_IN}_FULFILLED`: {
+      const profile = action.payload.data.data.userInfo;
+      return {
+        ...state,
+        profile,
+        isLoading: false,
+      };
+    }
+
+    case `${REGISTER}_FULFILLED`: {
+      const profile = action.payload.data.data.userInfo;
+      return {
+        ...state,
+        profile,
+        isLoading: false,
+      };
+    }
+
+    case `${GET_PROFILE}`: {
+      const profile = action.payload;
+      return {
+        ...state,
+        profile,
         isLoading: false,
       };
     }

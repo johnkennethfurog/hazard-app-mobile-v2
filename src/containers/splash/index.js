@@ -1,14 +1,16 @@
 import React from 'react';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator, View, Image, Text} from 'react-native';
 import styles from './styles';
 import {checkIfSignIn} from '../../actions/user';
+import {getProfile} from '../../actions/user';
+import {connect} from 'react-redux';
 
 class SplashScreen extends React.Component {
   componentDidMount() {
     setTimeout(() => {
       checkIfSignIn(isSignedin => {
-        console.log('isSignedin', isSignedin);
         if (isSignedin) {
+          this.props.dispatch(getProfile());
           this.props.navigation.navigate('Home');
         } else {
           this.props.navigation.navigate('Auth');
@@ -20,10 +22,27 @@ class SplashScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator />
+        <Image resizeMode="cover" source={require('../../images/icon.png')} />
+        <Text
+          style={{
+            marginTop: -30,
+            fontSize: 25,
+            fontWeight: 'bold',
+            color: '#DE350B',
+          }}>
+          SIRENE APP
+        </Text>
       </View>
     );
   }
 }
 
-export default SplashScreen;
+const mapStateToProps = state => {
+  return {};
+};
+
+export default connect(mapStateToProps)(SplashScreen);
+
+/*
+
+*/

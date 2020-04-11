@@ -16,11 +16,18 @@ import CustomizeTextInput from '../../components/text-input';
 import pickerStyles from '../../utils/pickerStyles';
 import Colors from '../../utils/colors';
 import styles from './styles';
-import {register} from '../../actions/user';
+import {updateProfile} from '../../actions/user';
 import {getBarangays} from '../../actions/concern';
+import ChangePassword from '../../components/change-password';
+import Loading from '../../components/loading';
 
-class RegistrationScreen extends React.Component {
+class ProfileScreen extends React.Component {
   state = {
+    oldPassword: '',
+    password: '',
+    confirmPassword: '',
+    openChangePass: false,
+
     name: '',
     email: '',
     barangay: '',
@@ -28,29 +35,90 @@ class RegistrationScreen extends React.Component {
     mobileNumber: '',
   };
 
-  componentDidMount() {
-    this.props.dispatch(getBarangays());
+  constructor(props) {
+    super(props);
+
+    const {name, barangay, email, address, mobileNumber} = props.profile;
+    this.state = {
+      name,
+      address,
+      email,
+      mobileNumber: mobileNumber.substring(3, 13),
+      openChangePass: false,
+    };
   }
 
-  onLoginClicked = () => {
-    this.props.navigation.navigate('Auth');
-  };
+  componentDidMount() {
+    const {barangay} = this.props.profile;
+    this.props.dispatch(
+      getBarangays(() => {
+        this.setState({barangay});
+      }),
+    );
+  }
 
-  onRegisterClicked = () => {
-    const {name, email, mobileNumber, barangay} = this.state;
-    if (isEmpty(email) || isEmpty(barangay)) {
-      Alert.alert('Email and Barangay is required');
+  onUpdateClicked = () => {
+    const {email, name, mobileNumber, barangay, address} = this.state;
+    if (isEmpty(name) || isEmpty(barangay)) {
+      Alert.alert('Name and Barangay are required fields');
       return;
     }
 
-    register(this.state, () => {
-      this.props.navigation.navigate('Home');
+    this.props.dispatch(
+      updateProfile({name, email, barangay, address, mobileNumber}),
+    );
+  };
+
+  onPressChangeBtn = () => {
+    const {password, oldPassword, confirmPassword} = this.state;
+
+    if ((isEmpty(password), isEmpty(oldPassword), isEmpty(confirmPassword))) {
+      Alert.alert('All fields are required');
+      return;
+    }
+
+    if (confirmPassword !== password) {
+      Alert.alert('Password does not match');
+      return;
+    }
+
+    this.props.dispatch(
+      changePassword(password, oldPassword, () => {
+        this.setState({
+          openChangePass: false,
+          password: '',
+          oldPassword: '',
+          confirmPassword: '',
+        });
+      }),
+    );
+  };
+
+  onCloseModal = () => {
+    this.setState({
+      openChangePass: false,
+    });
+  };
+
+  onOpenModal = () => {
+    this.setState({
+      openChangePass: true,
     });
   };
 
   render() {
-    const {name, email, mobileNumber, address, barangay} = this.state;
-    const {barangays} = this.props;
+    const {
+      name,
+      email,
+      mobileNumber,
+      address,
+      barangay,
+      password,
+      oldPassword,
+      confirmPassword,
+      openChangePass,
+    } = this.state;
+    const {barangays, isLoading} = this.props;
 
     return (
       <View style={styles.container}>
@@ -58,7 +126,6 @@ class RegistrationScreen extends React.Component {
           style={{
             backgroundColor: 'white',
             borderRadius: 8,
-            elevation: 5,
             padding: 20,
             width: '100%',
           }}>
@@ -83,14 +150,18 @@ class RegistrationScreen extends React.Component {
             <CustomizeTextInput
               onChangeText={email => this.setState({email})}
               placeholder="Email Address"
+              enabled={false}
               value={email}
               inputStyles={{marginTop: 8}}
             />
 
             <CustomizeTextInput
+              prefix={'+63'}
               onChangeText={mobileNumber => this.setState({mobileNumber})}
               placeholder="Contact Number"
               value={mobileNumber}
+              maxLength={10}
+              keyboardType="phone-pad"
               inputStyles={{marginTop: 8}}
             />
 
@@ -98,6 +169,7 @@ class RegistrationScreen extends React.Component {
               style={{marginTop: 8, borderColor: Colors.gray, borderWidth: 1}}>
               <RNPickerSelect
                 style={pickerStyles}
+                value={barangay}
                 placeholder={{
                   label: 'Select a Barnagay ...',
                   value: null,
@@ -119,30 +191,47 @@ class RegistrationScreen extends React.Component {
                 marginTop: 16,
               }}>
               <TouchableOpacity
-                onPress={this.onRegisterClicked}
+                onPress={this.onUpdateClicked}
                 style={styles.btn}>
                 <Text
                   style={{fontSize: 14, color: 'white', fontWeight: 'bold'}}>
-                  Register
+                  UPDATE
                 </Text>
               </TouchableOpacity>
-              <View style={{flexDirection: 'row', marginTop: 5}}>
+            </View>
+
+            <View
+              style={{
+                marginTop: 16,
+              }}>
+              <TouchableOpacity onPress={this.onOpenModal} style={styles.btn}>
                 <Text
-                  style={{
-                    fontSize: 12,
-                    color: 'gray',
-                  }}>
-                  Already have an account?
+                  style={{fontSize: 14, color: 'white', fontWeight: 'bold'}}>
+                  CHANGE PASSWORD
                 </Text>
-                <TouchableOpacity onPress={this.onLoginClicked}>
-                  <Text style={{color: 'black', paddingHorizontal: 3}}>
-                    Sign-in
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
+        <ChangePassword
+          closeModal={this.onCloseModal}
+          oldPass={oldPassword}
+          confirmPass={confirmPassword}
+          pass={password}
+          onPressChangeBtn={this.onPressChangeBtn}
+          onPassChange={password => {
+            this.setState({password});
+          }}
+          onOldPassChange={oldPassword => {
+            this.setState({oldPassword});
+          }}
+          onConfirmPassChange={confirmPassword => {
+            this.setState({confirmPassword});
+          }}
+          isOpen={openChangePass}
+          isChangingPassword={isLoading}
+        />
+        <Loading isVisible={isLoading} />
       </View>
     );
   }
@@ -150,9 +239,12 @@ class RegistrationScreen extends React.Component {
 
 const mapStateToProps = state => {
   const {barangays} = state.concern;
+  const {profile, isLoading} = state.citizen;
   return {
     barangays,
+    profile,
+    isLoading,
   };
 };
 
-export default connect(mapStateToProps)(withNavigation(RegistrationScreen));
+export default connect(mapStateToProps)(withNavigation(ProfileScreen));

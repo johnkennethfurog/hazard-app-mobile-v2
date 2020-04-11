@@ -55,7 +55,7 @@ export const getConcernTypes = () => dispatch => {
     .catch(err => {});
 };
 
-export const getBarangays = () => dispatch => {
+export const getBarangays = callback => dispatch => {
   SInfo.getItem(TOKEN, {})
     .then(token => {
       dispatch({
@@ -66,6 +66,11 @@ export const getBarangays = () => dispatch => {
             rspns.data.data = rspns.data.data.map(type => {
               return {label: type.name, value: type._id};
             });
+
+            if (callback) {
+              callback();
+            }
+
             return rspns;
           }),
       });

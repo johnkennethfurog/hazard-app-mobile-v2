@@ -19,9 +19,8 @@ import Loading from '../../components/loading';
 
 class SignInScreen extends React.Component {
   state = {
-    email: 'johnkennethfurog@gmail.com',
-    pass: 'password',
-    isLoading: false,
+    email: '',
+    pass: '',
   };
 
   onLoginClicked = () => {
@@ -32,15 +31,10 @@ class SignInScreen extends React.Component {
       return;
     }
 
-    this.setState({isLoading: true});
-    signin(
-      this.state,
-      () => {
+    this.props.dispatch(
+      signin(this.state, () => {
         this.props.navigation.navigate('Home');
-      },
-      () => {
-        this.setState({isLoading: false});
-      },
+      }),
     );
   };
 
@@ -49,8 +43,8 @@ class SignInScreen extends React.Component {
   };
 
   render() {
-    const {email, pass, isLoading} = this.state;
-
+    const {email, pass} = this.state;
+    const {isLoading} = this.props;
     return (
       <View style={styles.container}>
         <View
@@ -84,11 +78,12 @@ class SignInScreen extends React.Component {
               onChangeText={email => this.setState({email})}
               placeholder="Email"
               value={email}
+              keyboardType="email-address"
             />
 
             <CustomizeTextInput
               onChangeText={pass => this.setState({pass})}
-              placeholder="pass"
+              placeholder="Password"
               value={pass}
               inputStyles={{marginTop: 8}}
               isSecured
@@ -130,7 +125,9 @@ class SignInScreen extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return {};
+  return {
+    isLoading: state.citizen.isLoading,
+  };
 };
 
 export default connect(mapStateToProps)(withNavigation(SignInScreen));

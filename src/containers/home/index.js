@@ -60,7 +60,7 @@ class HomeScreen extends React.Component {
     self = this;
     this.props.dispatch(getConcerns());
     checkIfNeedToChangePass(openChangePass => {
-      this.setState({openChangePass});
+      // this.setState({openChangePass});
     });
   }
 
@@ -97,6 +97,8 @@ class HomeScreen extends React.Component {
       this.props.navigation.navigate('Lessons');
     } else if (action === 'bt_hotline') {
       this.props.navigation.navigate('Hotline');
+    } else if (action === 'bt_profile') {
+      this.props.navigation.navigate('Profile');
     }
   };
 
@@ -125,8 +127,20 @@ class HomeScreen extends React.Component {
     );
   };
 
-  renderIcon = () => {
-    return <Text style={{color: 'white', width: 20, height: 20}}>KK</Text>;
+  renderEmpty = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          height: 100,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <Text style={{fontSize: 20, color: Colors.gray}}>
+          No Concern to display
+        </Text>
+      </View>
+    );
   };
 
   render() {
@@ -137,6 +151,7 @@ class HomeScreen extends React.Component {
       <SafeAreaView style={styles.container}>
         <FlatList
           data={concerns}
+          ListEmptyComponent={this.renderEmpty}
           renderItem={({item}) => <ConcernCard concern={item} />}
           keyExtractor={(item, index) => index.toString()}
         />
@@ -173,6 +188,7 @@ class HomeScreen extends React.Component {
 }
 
 const mapStateToProps = state => {
+  const {profile} = state.citizen;
   return {
     isLoading: state.concern.isLoading,
     concerns: state.concern.concerns,

@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, View, Image} from 'react-native';
+import {TextInput, View, Text, Image} from 'react-native';
 
 import styles from './styles';
 
@@ -11,6 +11,9 @@ const CustomizeTextInput = ({
   inputStyles,
   isSecured = false,
   enabled = true,
+  prefix,
+  maxLength,
+  keyboardType,
 }) => (
   <View
     style={[
@@ -18,6 +21,12 @@ const CustomizeTextInput = ({
       inputStyles,
       !enabled ? styles.disabled : '',
     ]}>
+    {prefix && (
+      <View style={{justifyContent: 'center', marginHorizontal: 10}}>
+        <Text>{prefix}</Text>
+      </View>
+    )}
+
     <TextInput
       style={styles.txtInput}
       underlineColorAndroid="transparent"
@@ -25,8 +34,10 @@ const CustomizeTextInput = ({
       onChangeText={text => onChangeText(text)}
       value={value}
       placeholder={placeholder}
+      maxLength={maxLength}
       secureTextEntry={isSecured}
       editable={enabled}
+      keyboardType={keyboardType}
     />
     <View style={{justifyContent: 'center'}}>
       <Image style={[styles.imgIcon, {marginLeft: 4}]} source={imgUrl} />
