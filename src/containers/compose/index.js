@@ -142,6 +142,7 @@ class ComposeScreen extends React.Component {
   };
 
   onFinishedRating = urgencyLevel => {
+    console.log('onFinishedRating', urgencyLevel);
     this.setState({urgencyLevel});
   };
 
@@ -169,8 +170,16 @@ class ComposeScreen extends React.Component {
   };
 
   render() {
-    const {concern, hazardImage, showRating, address} = this.state;
+    const {
+      concern,
+      hazardImage,
+      showRating,
+      address,
+      urgencyLevel,
+    } = this.state;
     const {barangays, concernTypes, isLoading} = this.props;
+
+    console.log('urgencyLevel', urgencyLevel);
 
     return (
       <ScrollView contentContainerStyle={{flex: 1}}>
@@ -231,9 +240,9 @@ class ComposeScreen extends React.Component {
                 reviews={['Low Risk', 'Moderate Risk!', 'High Risk!!']}
                 selectedColor={Colors.red}
                 reviewColor={Colors.red}
-                defaultRating={1}
+                defaultRating={urgencyLevel}
                 size={45}
-                onFinishedRating={this.onFinishedRating}
+                onFinishRating={this.onFinishedRating}
               />
             </View>
           )}

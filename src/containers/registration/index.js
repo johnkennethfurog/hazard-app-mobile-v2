@@ -19,6 +19,7 @@ import styles from './styles';
 import {register} from '../../actions/user';
 import {getBarangays} from '../../actions/concern';
 import Loading from '../../components/loading';
+import TermsConditions from '../../components/terms-conditions';
 
 class RegistrationScreen extends React.Component {
   state = {
@@ -27,6 +28,7 @@ class RegistrationScreen extends React.Component {
     barangay: '',
     address: '',
     mobileNumber: '',
+    isTermsOpen: false,
   };
 
   componentDidMount() {
@@ -51,8 +53,23 @@ class RegistrationScreen extends React.Component {
     );
   };
 
+  openTermsCondition = () => {
+    this.setState({isTermsOpen: true});
+  };
+
+  closeTermsCondition = () => {
+    this.setState({isTermsOpen: false});
+  };
+
   render() {
-    const {name, email, mobileNumber, address, barangay} = this.state;
+    const {
+      name,
+      email,
+      mobileNumber,
+      address,
+      barangay,
+      isTermsOpen,
+    } = this.state;
     const {barangays, isLoading} = this.props;
 
     return (
@@ -135,7 +152,12 @@ class RegistrationScreen extends React.Component {
                   Register
                 </Text>
               </TouchableOpacity>
-              <View style={{flexDirection: 'row', marginTop: 5}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: 5,
+                  alignItems: 'center',
+                }}>
                 <Text
                   style={{
                     fontSize: 12,
@@ -150,9 +172,27 @@ class RegistrationScreen extends React.Component {
                 </TouchableOpacity>
               </View>
             </View>
+            <TouchableOpacity onPress={this.openTermsCondition}>
+              <Text
+                style={{
+                  marginTop: 30,
+                  fontSize: 12,
+                  color: Colors.red,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                }}>
+                View Terms and Condition
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
         <Loading isVisible={isLoading} />
+
+        <TermsConditions
+          isOpen={isTermsOpen}
+          onOpenModal={this.openTermsCondition}
+          closeModal={this.closeTermsCondition}
+        />
       </View>
     );
   }

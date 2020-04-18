@@ -174,8 +174,6 @@ export const updateProfile = ({
     mobileNumber,
   };
 
-  console.log('payload', payload);
-
   SInfo.getItem(TOKEN, {})
     .then(token => {
       dispatch({
