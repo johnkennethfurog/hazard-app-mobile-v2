@@ -6,12 +6,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 24,
+    height: '100%',
     paddingVertical: 48,
     backgroundColor: 'rgba(0,0,0,0.75)',
     justifyContent: 'center',
   },
   content: {
     backgroundColor: 'white',
+    paddingHorizontal: 20,
   },
 
   textHeader: {
@@ -25,13 +27,13 @@ const styles = StyleSheet.create({
   },
   viewHeader: {
     flexDirection: 'row',
-    padding: 16,
+    paddingVertical: 16,
     justifyContent: 'center',
   },
   btnChange: {
     backgroundColor: Colors.red,
     padding: 15,
-    margin: 10,
+    marginVertical: 20,
   },
   btnChangeText: {
     color: 'white',
