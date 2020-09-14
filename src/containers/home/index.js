@@ -60,7 +60,7 @@ class HomeScreen extends React.Component {
     self = this;
     this.props.dispatch(getConcerns());
     checkIfNeedToChangePass(openChangePass => {
-      // this.setState({openChangePass});
+      this.setState({openChangePass});
     });
   }
 

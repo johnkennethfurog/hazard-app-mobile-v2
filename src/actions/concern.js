@@ -42,14 +42,7 @@ export const getConcernTypes = () => dispatch => {
     .then(token => {
       dispatch({
         type: GET_CONCERN_TYPES,
-        payload: hazardAuthorizeApiRequest(token)
-          .get('/concern/concerntype')
-          .then(rspns => {
-            rspns.data.data = rspns.data.data.map(type => {
-              return {label: type.name, value: type._id};
-            });
-            return rspns;
-          }),
+        payload: hazardAuthorizeApiRequest(token).get('/concern/concerntype'),
       });
     })
     .catch(err => {});

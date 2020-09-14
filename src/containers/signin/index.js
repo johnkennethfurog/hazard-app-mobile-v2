@@ -19,8 +19,8 @@ import Loading from '../../components/loading';
 
 class SignInScreen extends React.Component {
   state = {
-    email: '',
-    pass: '',
+    email: 'johnkennethfurog@gmail.com',
+    pass: 'password',
   };
 
   onLoginClicked = () => {

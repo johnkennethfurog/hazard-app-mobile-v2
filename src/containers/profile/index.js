@@ -16,7 +16,7 @@ import CustomizeTextInput from '../../components/text-input';
 import pickerStyles from '../../utils/pickerStyles';
 import Colors from '../../utils/colors';
 import styles from './styles';
-import {updateProfile} from '../../actions/user';
+import {updateProfile, changePassword} from '../../actions/user';
 import {getBarangays} from '../../actions/concern';
 import ChangePassword from '../../components/change-password';
 import Loading from '../../components/loading';
@@ -44,7 +44,7 @@ class ProfileScreen extends React.Component {
       address,
       email,
       mobileNumber: mobileNumber.substring(3, 13),
-      openChangePass: false,
+      openChangePass: true,
     };
   }
 

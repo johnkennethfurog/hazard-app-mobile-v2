@@ -142,7 +142,6 @@ class ComposeScreen extends React.Component {
   };
 
   onFinishedRating = urgencyLevel => {
-    console.log('onFinishedRating', urgencyLevel);
     this.setState({urgencyLevel});
   };
 
@@ -169,6 +168,17 @@ class ComposeScreen extends React.Component {
     });
   };
 
+  onSelectHazardTypes = concernType => {
+    const {concernTypesRaw} = this.props;
+
+    const type = concernTypesRaw.find(x => x._id === concernType);
+
+    this.setState({
+      concernType,
+      urgencyLevel: type.urgencyLevel,
+    });
+  };
+
   render() {
     const {
       concern,
@@ -178,16 +188,13 @@ class ComposeScreen extends React.Component {
       urgencyLevel,
     } = this.state;
     const {barangays, concernTypes, isLoading} = this.props;
-
-    console.log('urgencyLevel', urgencyLevel);
-
     return (
       <ScrollView contentContainerStyle={{flex: 1}}>
         <View style={styles.container}>
           <Text style={[styles.txtLabel, {marginTop: 0}]}>HAZARD TYPE</Text>
           <RNPickerSelect
             style={pickerStyles}
-            onValueChange={concernType => this.setState({concernType})}
+            onValueChange={this.onSelectHazardTypes}
             items={concernTypes}
           />
 
@@ -292,12 +299,19 @@ class ComposeScreen extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const {concernTypes, barangays, uploadedPhoto, isLoading} = state.concern;
+  const {
+    concernTypes,
+    barangays,
+    uploadedPhoto,
+    isLoading,
+    concernTypesRaw,
+  } = state.concern;
   return {
     concernTypes,
     barangays,
     uploadedPhoto,
     isLoading,
+    concernTypesRaw,
   };
 };
 

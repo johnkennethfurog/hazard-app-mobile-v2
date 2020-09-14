@@ -14,6 +14,7 @@ const initialState = {
   isLoadingConcernType: false,
   concerns: [],
   concernTypes: [],
+  concernTypesRaw: [],
   barangays: [],
   error: '',
   uploadedPhoto: null,
@@ -65,9 +66,16 @@ export default function concern(state = initialState, action) {
     }
 
     case `${GET_CONCERN_TYPES}_FULFILLED`: {
-      const concernTypes = action.payload.data.data;
+      const concernTypesRaw = action.payload.data.data;
+      const concernTypes = concernTypesRaw.map(type => {
+        return {
+          label: type.name,
+          value: type._id,
+        };
+      });
       return {
         ...state,
+        concernTypesRaw,
         concernTypes,
         isLoadingConcernType: false,
       };
